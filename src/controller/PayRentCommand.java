@@ -6,11 +6,11 @@ import model.Property;
 import model.Square;
 import view.GameView;
 
-public class BuyPropertyCommand implements Command {
+public class PayRentCommand implements Command {
     private Game game;
     private GameView view;
 
-    public BuyPropertyCommand(Game game, GameView view) {
+    public PayRentCommand(Game game, GameView view) {
         this.game = game;
         this.view = view;
     }
@@ -22,11 +22,11 @@ public class BuyPropertyCommand implements Command {
 
         if (currentSquare instanceof Property) {
             Property property = (Property) currentSquare;
-            if (!property.isOwned() && currentPlayer.canAfford(property.getPrice())) {
-                property.buyProperty(currentPlayer);
-                view.displayMessage(currentPlayer.getName() + " bought " + property.getName() + " for " + property.getPrice());
+            if (property.isOwned() && property.getOwner() != currentPlayer) {
+                property.payRent(currentPlayer);
+                view.displayMessage(currentPlayer.getName() + " paid rent of " + property.getRent() + " to " + property.getOwner().getName());
             } else {
-                view.displayError("Cannot buy property: insufficient funds or already owned.");
+                view.displayError("No rent payment needed on this square.");
             }
         } else {
             view.displayError("Current square is not a property.");

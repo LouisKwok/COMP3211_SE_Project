@@ -6,7 +6,7 @@ public class Property extends Square {
     private Player owner;
 
     public Property(String name, int price, int rent) {
-        super(name);
+        super(name, SquareType.PROPERTY);
         this.price = price;
         this.rent = rent;
         this.owner = null;
@@ -24,7 +24,31 @@ public class Property extends Square {
         return owner;
     }
 
-    public void setOwner(Player owner) {
-        this.owner = owner;
+    public boolean isOwned() {
+        return owner != null;
+    }
+
+    public void buyProperty(Player player) {
+        if (!isOwned() && player.canAfford(price)) {
+            player.deductMoney(price);
+            owner = player;
+            player.addProperty(this);
+        }
+    }
+
+    public void payRent(Player player) {
+        if (isOwned() && owner != player) {
+            player.deductMoney(rent);
+            owner.addMoney(rent);
+        }
+    }
+
+    @Override
+    public void landOn(Player player, Game game) {
+        if (isOwned()) {
+            payRent(player);
+        } else {
+            // Optionally: Prompt player to buy this property
+        }
     }
 }

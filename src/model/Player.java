@@ -1,21 +1,23 @@
 package model;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Player {
     private String name;
     private int money;
     private int position;
-    private ArrayList<Property> properties;
+    private List<Property> properties;
     private boolean inJail;
-    private boolean hasGetOutOfJailCard;
+    private InJailState jailState;
 
-    public Player(String name, int startingMoney) {
+    public Player(String name, int initialMoney) {
         this.name = name;
-        this.money = startingMoney;
+        this.money = initialMoney;
         this.position = 0;
         this.properties = new ArrayList<>();
         this.inJail = false;
-        this.hasGetOutOfJailCard = false;
+        this.jailState = new InJailState();
     }
 
     public String getName() {
@@ -26,20 +28,12 @@ public class Player {
         return money;
     }
 
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
     public int getPosition() {
         return position;
     }
 
     public void setPosition(int position) {
         this.position = position;
-    }
-
-    public void addProperty(Property property) {
-        properties.add(property);
     }
 
     public boolean isInJail() {
@@ -50,15 +44,31 @@ public class Player {
         this.inJail = inJail;
     }
 
-    public ArrayList<Property> getProperties() {
+    public InJailState getJailState() {
+        return jailState;
+    }
+
+    public void addProperty(Property property) {
+        properties.add(property);
+    }
+
+    public void deductMoney(int amount) {
+        money -= amount;
+    }
+
+    public void addMoney(int amount) {
+        money += amount;
+    }
+
+    public void move(int steps) {
+        position = (position + steps) % 20; // Assuming a 20-square board
+    }
+
+    public List<Property> getProperties() {
         return properties;
     }
 
-    public boolean hasGetOutOfJailCard() {
-        return hasGetOutOfJailCard;
-    }
-
-    public void setHasGetOutOfJailCard(boolean hasGetOutOfJailCard) {
-        this.hasGetOutOfJailCard = hasGetOutOfJailCard;
+    public boolean canAfford(int amount) {
+        return money >= amount;
     }
 }

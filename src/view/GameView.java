@@ -1,19 +1,9 @@
 package view;
-import model.Player;
-import java.util.List;
 
-public class GameView {
-    public void displayPlayerStatus(Player player) {
-        System.out.println("Player: " + player.getName() + " | Money: " + player.getMoney() + " | Position: " + player.getPosition());
-    }
+import model.Game;
 
-    public void displayAllPlayers(List<Player> players) {
-        for (Player player : players) {
-            displayPlayerStatus(player);
-        }
-    }
-
-    public void displayMessage(String message) {
-        System.out.println(message);
-    }
+public interface GameView {
+    void displayMessage(String message);
+    void displayError(String error);
+    void displayGameStatus(Game game);
 }
