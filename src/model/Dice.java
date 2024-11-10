@@ -6,14 +6,10 @@ public class Dice {
     private Random random;
 
     public Dice() {
-        this.random = new Random();
+        random = new Random();
     }
 
     public int roll() {
-        return random.nextInt(4) + 1; // 1-4 for tetrahedral dice
-    }
-
-    public boolean isDoubleRoll() {
-        return roll() == roll(); // If both rolls have the same result, it's a double
+        return random.nextInt(4) + 1; // Four-sided dice
     }
 }

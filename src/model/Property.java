@@ -1,12 +1,14 @@
 package model;
 
+import java.util.Scanner;
+
 public class Property extends Square {
     private int price;
     private int rent;
     private Player owner;
 
     public Property(String name, int price, int rent) {
-        super(name, SquareType.PROPERTY);
+        super(name);
         this.price = price;
         this.rent = rent;
         this.owner = null;
@@ -24,31 +26,41 @@ public class Property extends Square {
         return owner;
     }
 
-    public boolean isOwned() {
-        return owner != null;
-    }
-
-    public void buyProperty(Player player) {
-        if (!isOwned() && player.canAfford(price)) {
-            player.deductMoney(price);
-            owner = player;
-            player.addProperty(this);
-        }
-    }
-
-    public void payRent(Player player) {
-        if (isOwned() && owner != player) {
-            player.deductMoney(rent);
-            owner.addMoney(rent);
-        }
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 
     @Override
-    public void landOn(Player player, Game game) {
-        if (isOwned()) {
-            payRent(player);
+    public void action(Player player) {
+        if (owner == null) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println(player.getName() + " lands on " + name + ". The property is available for HKD " + price + ".");
+            System.out.print("Would you like to buy this property? (yes/no): ");
+            String response = scanner.next().toLowerCase();
+
+            if (response.equals("yes")) {
+                if (player.getMoney() >= price) {
+                    player.updateMoney(-price);
+                    this.setOwner(player);
+                    System.out.println(player.getName() + " buys " + name + " for HKD " + price + ".");
+                } else {
+                    System.out.println(player.getName() + " does not have enough money to buy " + name + ".");
+                }
+            } else {
+                System.out.println(player.getName() + " chose not to buy " + name + ".");
+            }
+        } else if (owner != player) {
+            System.out.println(player.getName() + " lands on " + name + " which is owned by " + owner.getName() + ". Rent is HKD " + rent + ".");
+            if (player.getMoney() >= rent) {
+                player.updateMoney(-rent);
+                owner.updateMoney(rent);
+                System.out.println(player.getName() + " pays HKD " + rent + " to " + owner.getName() + ".");
+            } else {
+                System.out.println(player.getName() + " does not have enough money to pay rent and is bankrupt.");
+                player.updateMoney(-player.getMoney()); // Set player's money to 0 (bankrupt)
+            }
         } else {
-            // Optionally: Prompt player to buy this property
+            System.out.println(player.getName() + " lands on their own property: " + name + ".");
         }
     }
 }

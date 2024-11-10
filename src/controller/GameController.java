@@ -1,139 +1,156 @@
 package controller;
 
-import model.*;
+import model.Board;
+import model.Dice;
+import model.Player;
+import model.Square;
 import view.GameView;
 
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class GameController {
-    private Game game;
+    private Board board;
+    private ArrayList<Player> players;
+    private Dice dice;
     private GameView view;
-    private Scanner scanner;
+    private int currentPlayerIndex;
 
-    public GameController(Game game, GameView view) {
-        this.game = game;
+    // Constructor accepting the Board, Dice, and GameView, and initializes players
+    public GameController(Board board, Dice dice, GameView view) {
+        this.board = board;
+        this.dice = dice;
         this.view = view;
-        this.scanner = new Scanner(System.in); // For interactive prompts
+        this.players = initializePlayers();  // Initialize players during construction
+        this.currentPlayerIndex = 0;
     }
 
-    public void startGame() {
-        view.displayMessage("Welcome to Monopoly!");
+    // Method to initialize players with user input or randomly generated names for each player individually
+    private ArrayList<Player> initializePlayers() {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Player> players = new ArrayList<>();
+        int numPlayers = 0;
 
-        // Main game loop - will continue until the game ends
-        while (!game.isGameOver()) {
-            Player currentPlayer = game.getCurrentPlayer();
-            view.displayMessage("\n=== " + currentPlayer.getName() + "'s turn ===");
-
-            // Display the current game status
-            view.displayGameStatus(game);
-
-            // Player rolls the dice
-            rollDiceAndMove(currentPlayer);
-
-            // Check the square the player landed on and handle actions
-            handleSquareLanding(currentPlayer);
-
-            // End the current player's turn and move to the next player
-            game.nextTurn();
-
-            view.displayMessage("=== End of " + currentPlayer.getName() + "'s turn ===\n");
-        }
-
-        view.displayMessage("Game Over!");
-    }
-
-    // Roll the dice and move the player
-    private void rollDiceAndMove(Player currentPlayer) {
-        // Roll the dice and calculate the total roll
-        int rollResult = rollDice();
-        view.displayMessage(currentPlayer.getName() + " rolled a " + rollResult);
-
-        // Move the player based on the roll result
-        currentPlayer.move(rollResult);
-        view.displayMessage(currentPlayer.getName() + " moved to position " + currentPlayer.getPosition());
-    }
-
-    // Rolls two 4-sided dice and returns the total result
-    private int rollDice() {
-        int dice1 = (int) (Math.random() * 4) + 1; // Simulating a 4-sided dice roll
-        int dice2 = (int) (Math.random() * 4) + 1;
-        return dice1 + dice2;
-    }
-
-    // Handle actions when a player lands on a square
-    private void handleSquareLanding(Player player) {
-        Square currentSquare = game.getBoard().getSquare(player.getPosition());
-
-        // Check the type of square and perform the corresponding action
-        if (currentSquare instanceof Property) {
-            handlePropertySquare(player, (Property) currentSquare);
-        } else if (currentSquare instanceof ChanceSquare) {
-            handleChanceSquare(player, (ChanceSquare) currentSquare);
-        } else if (currentSquare instanceof GoToJailSquare) {
-            handleGoToJailSquare(player);
-        } else if (currentSquare instanceof IncomeTaxSquare) {
-            handleIncomeTaxSquare(player, (IncomeTaxSquare) currentSquare);
-        } else if (currentSquare instanceof FreeParkingSquare) {
-            handleFreeParkingSquare();
-        } else if (currentSquare instanceof JailSquare) {
-            handleJailSquare(player);
-        }
-    }
-
-    // Handle landing on a property square
-    private void handlePropertySquare(Player player, Property property) {
-        if (!property.isOwned()) {
-            // Prompt the player to buy the property if it’s unowned
-            view.displayMessage(player.getName() + " landed on " + property.getName() + ", which costs " + property.getPrice());
-            view.displayMessage("Would you like to buy this property? (yes/no)");
-
-            String response = scanner.nextLine();
-            if (response.equalsIgnoreCase("yes") && player.getMoney() >= property.getPrice()) {
-                property.buyProperty(player);
-                view.displayMessage(player.getName() + " bought " + property.getName());
-            } else {
-                view.displayMessage(player.getName() + " chose not to buy " + property.getName() + " or doesn't have enough money.");
+        // Get the number of players from the user with validation
+        while (true) {
+            System.out.print("Enter the number of players (2-6): ");
+            try {
+                numPlayers = scanner.nextInt();
+                if (numPlayers >= 2 && numPlayers <= 6) {
+                    break;
+                } else {
+                    System.out.println("Invalid number of players. Please enter a value between 2 and 6.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter an integer between 2 and 6.");
+                scanner.next(); // Clear the invalid input
             }
-        } else if (property.getOwner() != player) {
-            // If the property is owned by another player, pay rent
-            view.displayMessage(player.getName() + " landed on " + property.getName() + ", owned by " + property.getOwner().getName());
-            property.payRent(player);
-            view.displayMessage(player.getName() + " paid rent of " + property.getRent() + " to " + property.getOwner().getName());
         }
+
+        scanner.nextLine(); // Clear the newline character left in the buffer
+
+        // List of random names for players
+        List<String> randomNames = new ArrayList<>(List.of("Alex", "Taylor", "Jordan", "Morgan", "Sam", "Charlie"));
+        Random random = new Random();
+
+        // Generate player names based on each player's individual choice
+        for (int i = 1; i <= numPlayers; i++) {
+            String playerName;
+            while (true) {
+                System.out.print("Player " + i + ": Would you like to input your name or use a random name? (input/random): ");
+                String choice = scanner.nextLine().toLowerCase();
+
+                if (choice.equals("input")) {
+                    // User inputs their name
+                    System.out.print("Enter name for Player " + i + ": ");
+                    playerName = scanner.nextLine();
+                    break;
+                } else if (choice.equals("random")) {
+                    // System generates a random name
+                    if (randomNames.isEmpty()) {
+                        System.out.println("No more random names available, please input a name.");
+                        continue;
+                    }
+                    int randomIndex = random.nextInt(randomNames.size());
+                    playerName = randomNames.get(randomIndex);
+                    randomNames.remove(randomIndex); // Remove the name from the list to avoid duplication
+                    System.out.println("Player " + i + " is named: " + playerName);
+                    break;
+                } else {
+                    System.out.println("Invalid choice. Please enter 'input' or 'random'.");
+                }
+            }
+
+            players.add(new Player(playerName));
+        }
+
+        return players;
     }
 
-    // Handle landing on a Chance square
-    private void handleChanceSquare(Player player, ChanceSquare chanceSquare) {
-        view.displayMessage(player.getName() + " landed on a Chance square.");
-        chanceSquare.applyChanceEffect(player);
-        view.displayMessage(player.getName() + "'s new balance is: " + player.getMoney());
-    }
+    // Main game loop
+    public void startGame() {
+        boolean gameEnded = false;
 
-    // Handle landing on a Go To Jail square
-    private void handleGoToJailSquare(Player player) {
-        view.displayMessage(player.getName() + " landed on Go To Jail and is now being sent to Jail.");
-        player.setPosition(9); // Assuming 9 is the Jail square position
-        player.setInJail(true);
-    }
+        while (!gameEnded) {
+            // Display the current state of the board before each player's turn
+            view.displayBoard(board, players);
 
-    // Handle landing on an Income Tax square
-    private void handleIncomeTaxSquare(Player player, IncomeTaxSquare incomeTaxSquare) {
-        int taxAmount = incomeTaxSquare.calculateTax(player);
-        player.deductMoney(taxAmount);
-        view.displayMessage(player.getName() + " landed on Income Tax and paid " + taxAmount + ". New balance: " + player.getMoney());
-    }
+            Player currentPlayer = players.get(currentPlayerIndex);
+            view.displayPlayerStatus(currentPlayer);
+            view.showMessage(currentPlayer.getName() + "'s turn. Rolling dice...");
 
-    // Handle landing on Free Parking
-    private void handleFreeParkingSquare() {
-        view.displayMessage("Free Parking! Nothing happens.");
-    }
+            int roll1 = dice.roll();
+            int roll2 = dice.roll();
+            int rollTotal = roll1 + roll2;
+            view.showMessage("Rolled: " + roll1 + " and " + roll2 + " (Total: " + rollTotal + ")");
 
-    // Handle landing on Jail / Just Visiting
-    private void handleJailSquare(Player player) {
-        if (player.isInJail()) {
-            view.displayMessage(player.getName() + " is in Jail.");
-        } else {
-            view.displayMessage(player.getName() + " is just visiting Jail.");
+            // Handle Jail Scenario
+            if (currentPlayer.isInJail()) {
+                view.showMessage(currentPlayer.getName() + " is in jail. Rolling for doubles or paying a fine.");
+                if (roll1 == roll2) {
+                    view.showMessage("Doubles rolled! " + currentPlayer.getName() + " is free from jail!");
+                    currentPlayer.setInJail(false);
+                    currentPlayer.move(rollTotal);
+                } else {
+                    currentPlayer.decreaseJailTurn();
+                    if (currentPlayer.getJailTurns() == 0) {
+                        view.showMessage(currentPlayer.getName() + " has paid HKD 150 fine to get out of jail.");
+                        currentPlayer.updateMoney(-150);
+                        currentPlayer.setInJail(false);
+                        currentPlayer.move(rollTotal);
+                    }
+                }
+            } else {
+                currentPlayer.move(rollTotal);
+                Square currentSquare = board.getSquare(currentPlayer.getPosition());
+                currentSquare.action(currentPlayer); // Call the action method of the square
+            }
+
+            // Check player status (e.g., bankruptcy)
+            if (currentPlayer.getMoney() < 0) {
+                view.showMessage(currentPlayer.getName() + " is bankrupt and out of the game!");
+                players.remove(currentPlayerIndex);
+                if (players.size() == 0) {
+                    view.showMessage("No players left. The game is over.");
+                    gameEnded = true;
+                    break;
+                }
+                currentPlayerIndex--;
+            }
+
+            // End game if only one player left or after 100 rounds (could be added as a counter)
+            gameEnded = players.size() == 1;
+
+            // Move to the next player
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        }
+
+        // Declare the winner
+        if (players.size() == 1) {
+            view.showMessage("Game Over! Winner: " + players.get(0).getName());
         }
     }
 }

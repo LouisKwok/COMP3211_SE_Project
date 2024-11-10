@@ -1,12 +1,13 @@
 package model;
 
 public class FreeParkingSquare extends Square {
+
     public FreeParkingSquare() {
-        super("Free Parking", SquareType.FREE_PARKING);
+        super("Free Parking");
     }
 
     @Override
-    public void landOn(Player player, Game game) {
-        // No effect
+    public void action(Player player) {
+        System.out.println(player.getName() + " lands on Free Parking. Nothing happens.");
     }
 }
