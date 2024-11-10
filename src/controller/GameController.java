@@ -6,6 +6,7 @@ import model.Player;
 import model.Square;
 import view.GameView;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -19,8 +20,8 @@ public class GameController {
     private GameView view;
     private int currentPlayerIndex;
 
-    // Constructor accepting the Board, Dice, and GameView, and initializes players
-    public GameController(Board board, Dice dice, GameView view) {
+    // Constructor accepting Dice, GameView, and Board, and initializes players
+    public GameController(Dice dice, GameView view, Board board) {
         this.board = board;
         this.dice = dice;
         this.view = view;
@@ -64,19 +65,17 @@ public class GameController {
                 String choice = scanner.nextLine().toLowerCase();
 
                 if (choice.equals("input")) {
-                    // User inputs their name
                     System.out.print("Enter name for Player " + i + ": ");
                     playerName = scanner.nextLine();
                     break;
                 } else if (choice.equals("random")) {
-                    // System generates a random name
                     if (randomNames.isEmpty()) {
                         System.out.println("No more random names available, please input a name.");
                         continue;
                     }
                     int randomIndex = random.nextInt(randomNames.size());
                     playerName = randomNames.get(randomIndex);
-                    randomNames.remove(randomIndex); // Remove the name from the list to avoid duplication
+                    randomNames.remove(randomIndex);
                     System.out.println("Player " + i + " is named: " + playerName);
                     break;
                 } else {
@@ -90,7 +89,7 @@ public class GameController {
         return players;
     }
 
-    // Main game loop
+    // Method to start the game
     public void startGame() {
         boolean gameEnded = false;
 
@@ -151,6 +150,33 @@ public class GameController {
         // Declare the winner
         if (players.size() == 1) {
             view.showMessage("Game Over! Winner: " + players.get(0).getName());
+        }
+    }
+
+    // Method to save the current game to a file
+    public void saveGameToFile() {
+        try (FileOutputStream fileOut = new FileOutputStream("saved_game.ser");
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(players);
+            out.writeObject(board);
+            out.writeObject(currentPlayerIndex);
+            System.out.println("Game saved successfully.");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    // Method to load a game from a file
+    public void loadGameFromFile() {
+        try (FileInputStream fileIn = new FileInputStream("saved_game.ser");
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            players = (ArrayList<Player>) in.readObject();
+            board = (Board) in.readObject();
+            currentPlayerIndex = (int) in.readObject();
+            System.out.println("Game loaded successfully.");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load the game.");
         }
     }
 }
