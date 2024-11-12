@@ -14,6 +14,7 @@ public class Property extends Square {
         this.owner = null;
     }
 
+    // Getter methods
     public int getPrice() {
         return price;
     }
@@ -26,8 +27,22 @@ public class Property extends Square {
         return owner;
     }
 
+    // Setter methods
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setRent(int rent) {
+        this.rent = rent;
+    }
+
+    // Use the setName method from the Square superclass to modify the property name
+    public void setName(String name) {
+        super.setName(name);
     }
 
     @Override
