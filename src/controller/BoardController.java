@@ -90,7 +90,7 @@ public class BoardController {
     public Board initializeBoard() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("是否要載入自訂地圖 (CSV 文件) 還是使用默認地圖？ (load/default): ");
+            System.out.print("Would you like to load a custom map (TXT file) or use the default map? (load/default): ");
             String choice = scanner.nextLine().toLowerCase();
 
             if (choice.equals("load")) {
@@ -98,7 +98,7 @@ public class BoardController {
             } else if (choice.equals("default")) {
                 return new Board();
             } else {
-                System.out.println("無效的選擇。請輸入 'load' 或 'default'。");
+                System.out.println("Invalid choice. Please enter 'load' or 'default'.");
             }
         }
     }
@@ -168,13 +168,13 @@ public class BoardController {
             // 更新 Board 的 squares 列表
             newBoard.getSquares().clear();
             newBoard.getSquares().addAll(squares);
-            System.out.println("地圖已成功從 custom_board.txt 文件中載入。");
+            System.out.println("The map has been successfully loaded from custom_board.txt.");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("找不到 TXT 文件，使用默認地圖。");
+            System.out.println("TXT file not found. Using the default map.");
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            System.out.println("數據格式錯誤，使用默認地圖。");
+            System.out.println("Data format error. Using the default map.");
         }
 
         return newBoard;
@@ -207,10 +207,10 @@ public class BoardController {
                     writer.println("Square\t" + square.getName() + "\t\t");
                 }
             }
-            System.out.println("地圖已成功保存到 custom_board.txt 文件。");
+            System.out.println("The map has been successfully saved to custom_board.txt.");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("保存地圖時出錯。");
+            System.out.println("Error saving the map to TXT file.");
         }
     }
 

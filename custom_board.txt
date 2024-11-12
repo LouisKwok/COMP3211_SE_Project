@@ -1,6 +1,6 @@
 Type	Name	Price	Rent
 Go	Go		
-Property	sdcsdc	212	212
+Property	wewe	22	22
 Property	Wan Chai	700	70
 IncomeTax	Income Tax		
 Property	Stanley	600	60
