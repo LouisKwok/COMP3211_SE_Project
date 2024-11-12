@@ -1,13 +1,87 @@
 package controller;
 
 import model.Board;
+import model.Property;
+import model.Square;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Scanner;
 
 public class BoardController {
+    private Board board;
 
+    public BoardController(Board board) {
+        this.board = board;
+    }
+
+    // Method to modify the properties of the gameboard
+    public void modifyPropertySquares() {
+        Scanner scanner = new Scanner(System.in);
+        List<Square> squares = board.getSquares();
+
+        while (true) {
+            System.out.println("Gameboard Designer: Modify Property Squares");
+            System.out.println("Select a property to modify by entering the corresponding number, or enter 0 to exit:");
+
+            // Display all property squares
+            for (int i = 0; i < squares.size(); i++) {
+                Square square = squares.get(i);
+                if (square instanceof Property) {
+                    Property property = (Property) square;
+                    System.out.println((i + 1) + ". " + property.getName() + " (Price: HKD " + property.getPrice() + ", Rent: HKD " + property.getRent() + ")");
+                }
+            }
+
+            // Get designer input
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+                if (choice == 0) {
+                    break; // Exit if 0 is entered
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number corresponding to the property.");
+                continue;
+            }
+
+            if (choice > 0 && choice <= squares.size() && squares.get(choice - 1) instanceof Property) {
+                Property property = (Property) squares.get(choice - 1);
+
+                // Prompt for new property details
+                System.out.print("Enter new name for property (" + property.getName() + "): ");
+                String newName = scanner.nextLine();
+
+                System.out.print("Enter new price for property (current price: HKD " + property.getPrice() + "): ");
+                int newPrice;
+                try {
+                    newPrice = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Price must be an integer.");
+                    continue;
+                }
+
+                System.out.print("Enter new rent for property (current rent: HKD " + property.getRent() + "): ");
+                int newRent;
+                try {
+                    newRent = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Rent must be an integer.");
+                    continue;
+                }
+
+                // Update property attributes
+                property.setName(newName);
+                property.setPrice(newPrice);
+                property.setRent(newRent);
+
+                System.out.println("Property updated successfully!");
+            } else {
+                System.out.println("Invalid property selection. Please try again.");
+            }
+        }
+    }
     // Method to initialize the board based on user choice
     public Board initializeBoard() {
         Scanner scanner = new Scanner(System.in);
