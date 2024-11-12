@@ -1,12 +1,14 @@
 package model;
 
 public class GoSquare extends Square {
-    public GoSquare(String name) {
-        super(name);
+
+    public GoSquare() {
+        super("Go");
     }
 
-    public void passGo(Player player) {
-        player.setMoney(player.getMoney() + 1500);
-        System.out.println(player.getName() + " passed GO and collected HKD 1500!");
+    @Override
+    public void action(Player player) {
+        player.updateMoney(1500);
+        System.out.println(player.getName() + " passes Go and receives HKD 1500.");
     }
 }

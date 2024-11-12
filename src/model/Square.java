@@ -1,7 +1,7 @@
 package model;
 
 public abstract class Square {
-    private String name;
+    protected String name;
 
     public Square(String name) {
         this.name = name;
@@ -10,4 +10,7 @@ public abstract class Square {
     public String getName() {
         return name;
     }
+
+    // Abstract method to be implemented by all subclasses
+    public abstract void action(Player player);
 }

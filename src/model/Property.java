@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Scanner;
+
 public class Property extends Square {
     private int price;
     private int rent;
@@ -26,5 +28,39 @@ public class Property extends Square {
 
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public void action(Player player) {
+        if (owner == null) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println(player.getName() + " lands on " + name + ". The property is available for HKD " + price + ".");
+            System.out.print("Would you like to buy this property? (yes/no): ");
+            String response = scanner.next().toLowerCase();
+
+            if (response.equals("yes")) {
+                if (player.getMoney() >= price) {
+                    player.updateMoney(-price);
+                    this.setOwner(player);
+                    System.out.println(player.getName() + " buys " + name + " for HKD " + price + ".");
+                } else {
+                    System.out.println(player.getName() + " does not have enough money to buy " + name + ".");
+                }
+            } else {
+                System.out.println(player.getName() + " chose not to buy " + name + ".");
+            }
+        } else if (owner != player) {
+            System.out.println(player.getName() + " lands on " + name + " which is owned by " + owner.getName() + ". Rent is HKD " + rent + ".");
+            if (player.getMoney() >= rent) {
+                player.updateMoney(-rent);
+                owner.updateMoney(rent);
+                System.out.println(player.getName() + " pays HKD " + rent + " to " + owner.getName() + ".");
+            } else {
+                System.out.println(player.getName() + " does not have enough money to pay rent and is bankrupt.");
+                player.updateMoney(-player.getMoney()); // Set player's money to 0 (bankrupt)
+            }
+        } else {
+            System.out.println(player.getName() + " lands on their own property: " + name + ".");
+        }
     }
 }
