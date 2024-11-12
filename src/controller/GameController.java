@@ -94,8 +94,8 @@ public class GameController {
         boolean gameEnded = false;
 
         while (!gameEnded) {
-            // Display the current state of the board before each player's turn
-            view.displayBoard(board, players);
+            // Display the current state of the board using the new large view
+            view.displayBoardLarge(board, players);
 
             Player currentPlayer = players.get(currentPlayerIndex);
             view.displayPlayerStatus(currentPlayer);
