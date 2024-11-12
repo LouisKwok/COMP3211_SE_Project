@@ -179,22 +179,29 @@ public class GameController {
         }
     }
 
-    // Method to save the current game to a file
-    public void saveGameToFile() {
-        try (FileOutputStream fileOut = new FileOutputStream("saved_game.ser");
-             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
-            out.writeObject(players);
-            out.writeObject(board);
-            out.writeObject(currentPlayerIndex);
-            System.out.println("Game saved successfully.");
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-    }
+//    // Method to save the current game to a file
+//    public void saveBoardToFile() {
+//        try (FileOutputStream fileOut = new FileOutputStream("board.ser");
+//             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+//            out.writeObject(board);
+//            System.out.println("Board saved successfully.");
+//        } catch (IOException i) {
+//            i.printStackTrace();
+//        }
+//    }
+
 
     // Method to load a game from a file
     public void loadGameFromFile() {
-        try (FileInputStream fileIn = new FileInputStream("saved_game.ser");
+        File saveFile = new File("saved_game.ser");
+
+        // 檢查文件是否存在
+        if (!saveFile.exists()) {
+            System.out.println("No saved game found. Starting a new game instead.");
+            return;
+        }
+
+        try (FileInputStream fileIn = new FileInputStream(saveFile);
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
             players = (ArrayList<Player>) in.readObject();
             board = (Board) in.readObject();
@@ -202,7 +209,8 @@ public class GameController {
             System.out.println("Game loaded successfully.");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            System.out.println("Failed to load the game.");
+            System.out.println("Failed to load the game. Starting a new game instead.");
         }
     }
+
 }

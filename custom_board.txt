@@ -1,0 +1,21 @@
+Type	Name	Price	Rent
+Go	Go		
+Property	sdcsdc	212	212
+Property	Wan Chai	700	70
+IncomeTax	Income Tax		
+Property	Stanley	600	60
+InJail	In Jail/Just Visiting		
+Property	Shek O	400	40
+Property	Mong Kok	500	50
+Chance	Chance		
+Property	Tsing Yi	400	40
+FreeParking	Free Parking		
+Property	Shatin	700	70
+Chance	Chance		
+Property	Tuen Mun	400	40
+Property	Tai Po	500	50
+GoToJail	Go to Jail		
+Property	Sai Kung	400	40
+Property	Yuen Long	400	40
+Chance	Chance		
+Property	Tai O	600	60

@@ -44,15 +44,15 @@ public class MainMenu {
 
             switch (choice) {
                 case 1:
-                    // Start a new game
+                    // 开始新游戏
                     System.out.println("Starting a new game...");
 
-                    // If no board is initialized yet, initialize a new one
+                    // 如果游戏板未初始化，初始化游戏板
                     if (board == null) {
-                        boardController = new BoardController(new Board()); // Use default board
+                        boardController = new BoardController(new Board());
                         board = boardController.initializeBoard();
                     }
-                    // Pass the initialized or modified board to the BoardController
+                    // 使用已初始化或已修改的游戏板
                     boardController = new BoardController(board);
                     GameController gameController = new GameController(dice, view, board);
                     gameController.startGame();
