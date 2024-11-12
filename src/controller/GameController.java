@@ -4,6 +4,7 @@ import model.Board;
 import model.Dice;
 import model.Player;
 import model.Square;
+import model.Property;
 import view.GameView;
 
 import java.io.*;
@@ -125,7 +126,32 @@ public class GameController {
             } else {
                 currentPlayer.move(rollTotal);
                 Square currentSquare = board.getSquare(currentPlayer.getPosition());
-                currentSquare.action(currentPlayer); // Call the action method of the square
+                view.showMessage(currentPlayer.getName() + " landed on " + currentSquare.getName());
+
+                // Handle property squares explicitly
+                if (currentSquare instanceof Property) {
+                    Property property = (Property) currentSquare;
+
+                    // Display property details using getters
+                    view.showMessage("Property Details: " + property.getName() + ", Price: HKD " + property.getPrice() + ", Rent: HKD " + property.getRent());
+
+                    // Use `getOwner()` to determine the ownership status of the property
+                    if (property.getOwner() == null) {
+                        // Property is available for purchase
+                        view.showMessage("This property is available for purchase.");
+                        property.action(currentPlayer); // Handle the purchase decision inside the action method
+                    } else if (property.getOwner().equals(currentPlayer)) {
+                        // Player owns this property
+                        view.showMessage(currentPlayer.getName() + " owns this property.");
+                    } else {
+                        // Another player owns this property
+                        view.showMessage("This property is owned by " + property.getOwner().getName() + ".");
+                        property.action(currentPlayer); // Handle paying rent inside the action method
+                    }
+                } else {
+                    // Handle non-property squares
+                    currentSquare.action(currentPlayer);
+                }
             }
 
             // Check player status (e.g., bankruptcy)
@@ -137,10 +163,10 @@ public class GameController {
                     gameEnded = true;
                     break;
                 }
-                currentPlayerIndex--;
+                currentPlayerIndex--; // Decrement to adjust the index since we removed a player
             }
 
-            // End game if only one player left or after 100 rounds (could be added as a counter)
+            // End game if only one player left
             gameEnded = players.size() == 1;
 
             // Move to the next player

@@ -2,6 +2,7 @@ package view;
 
 import model.Board;
 import model.Player;
+import model.Square;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ public class GameView {
 
     // Display a large, ASCII-style representation of the Monopoly board with numbered positions
     public void displayBoardLarge(Board board, List<Player> players) {
+        List<Square> squares = board.getSquares();
+
         System.out.println("+---------------------+---------------------+---------------------+---------------------+------------------------------------------+");
         System.out.println("| 11. Free Parking    | 12. Shatin          | 13. ? CHANCE        | 14. Tuen Mun        | 15. Tai Po          | 16. Go To Jail     |");
         System.out.println("|                     | HKD 700             |                     | HKD 400             | HKD 500             |                    |");
