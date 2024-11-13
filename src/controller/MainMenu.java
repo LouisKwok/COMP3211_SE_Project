@@ -67,7 +67,7 @@ public class MainMenu {
                     }
                     boardController = new BoardController(board);
                     GameController continueGameController = new GameController(dice, view, board);
-                    continueGameController.loadGameFromFile();
+                    continueGameController.loadGameFromTextFile();
                     continueGameController.startGame();
                     break;
 

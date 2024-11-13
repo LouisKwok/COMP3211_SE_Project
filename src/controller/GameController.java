@@ -107,6 +107,8 @@ public class GameController {
             int rollTotal = roll1 + roll2;
             view.showMessage("Rolled: " + roll1 + " and " + roll2 + " (Total: " + rollTotal + ")");
 
+            saveGameToTextFile();
+
             // Handle Jail Scenario
             if (currentPlayer.isInJail()) {
                 view.showMessage(currentPlayer.getName() + " is in jail. Rolling for doubles or paying a fine.");
@@ -191,26 +193,73 @@ public class GameController {
 //    }
 
 
-    // Method to load a game from a file
-    public void loadGameFromFile() {
-        File saveFile = new File("saved_game.ser");
+    // Method to save the current game state to a text file
+    public void saveGameToTextFile() {
+        File saveFile = new File("saved_game.txt");
 
-        // 檢查文件是否存在
+        try (PrintWriter writer = new PrintWriter(new FileWriter(saveFile))) {
+            // Save the current player index
+            writer.println(currentPlayerIndex);
+
+            // Save each player's data
+            writer.println(players.size()); // Number of players
+            for (Player player : players) {
+                writer.println(player.getName());
+                writer.println(player.getMoney());
+                writer.println(player.getPosition());
+                writer.println(player.isInJail());
+                writer.println(player.getJailTurns());
+            }
+
+            System.out.println("Game saved successfully to saved_game.txt.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to save the game.");
+        }
+    }
+
+    // Method to load the game state from a text file
+    public void loadGameFromTextFile() {
+        File saveFile = new File("saved_game.txt");
+
         if (!saveFile.exists()) {
             System.out.println("No saved game found. Starting a new game instead.");
             return;
         }
 
-        try (FileInputStream fileIn = new FileInputStream(saveFile);
-             ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            players = (ArrayList<Player>) in.readObject();
-            board = (Board) in.readObject();
-            currentPlayerIndex = (int) in.readObject();
-            System.out.println("Game loaded successfully.");
-        } catch (IOException | ClassNotFoundException e) {
+        try (Scanner scanner = new Scanner(saveFile)) {
+            // Load the current player index
+            currentPlayerIndex = Integer.parseInt(scanner.nextLine());
+
+            // Load the players
+            int numPlayers = Integer.parseInt(scanner.nextLine());
+            players = new ArrayList<>();
+
+            for (int i = 0; i < numPlayers; i++) {
+                String name = scanner.nextLine();
+                int money = Integer.parseInt(scanner.nextLine());
+                int position = Integer.parseInt(scanner.nextLine());
+                boolean inJail = Boolean.parseBoolean(scanner.nextLine());
+                int jailTurns = Integer.parseInt(scanner.nextLine());
+
+                // Create a new Player object and set the loaded data
+                Player player = new Player(name);
+                player.updateMoney(money - player.getMoney()); // Adjust the money to the loaded value
+                player.setPosition(position);
+                player.setInJail(inJail);
+                for (int j = 0; j < jailTurns; j++) {
+                    player.decreaseJailTurn(); // Set the jail turns
+                }
+
+                players.add(player);
+            }
+
+            System.out.println("Game loaded successfully from saved_game.txt.");
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to load the game. Starting a new game instead.");
         }
     }
+
 
 }

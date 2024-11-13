@@ -215,18 +215,18 @@ public class BoardController {
     }
 
 
-    // Method to load a gameboard from a file
-    private Board loadBoardFromFile() {
-        System.out.println("Loading existing gameboard from file...");
-        try (FileInputStream fileIn = new FileInputStream("board.ser");
-             ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            Board loadedBoard = (Board) in.readObject();
-            System.out.println("Board loaded successfully.");
-            return loadedBoard;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("Failed to load the board. Using default board instead.");
-            return new Board(); // 如果加载失败，返回默认的游戏板
-        }
-    }
+//    // Method to load a gameboard from a file
+//    private Board loadBoardFromFile() {
+//        System.out.println("Loading existing gameboard from file...");
+//        try (FileInputStream fileIn = new FileInputStream("board.ser");
+//             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+//            Board loadedBoard = (Board) in.readObject();
+//            System.out.println("Board loaded successfully.");
+//            return loadedBoard;
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//            System.out.println("Failed to load the board. Using default board instead.");
+//            return new Board(); // 如果加载失败，返回默认的游戏板
+//        }
+//    }
 }
