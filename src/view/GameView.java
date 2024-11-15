@@ -13,70 +13,100 @@ public class GameView {
     public void displayBoardLarge(Board board, List<Player> players) {
         List<Square> squares = board.getSquares();
 
-        // 加大每個方格的寬度到 36 個字符，並確保每一行都對齊
-        System.out.println("╔═══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╗");
-        System.out.printf(" ║ %-36s ║ %-36s ║ %-36s ║ %-36s ║ %-36s ║ %-36s ║\n",
-                formatSquare(squares.get(10), 10, players),
-                formatSquare(squares.get(11), 11, players),
-                formatSquare(squares.get(12), 12, players),
-                formatSquare(squares.get(13), 13, players),
-                formatSquare(squares.get(14), 14, players),
-                formatSquare(squares.get(15), 15, players));
-        System.out.println("╠══════════════════════════════════════╩═══════════════════════════════════════╩══════════════════════════════════════╩══════════════════════════════════════╩══════════════════════════════════════╩══════════════════════════════════════╣");
-        System.out.printf(" ║ %-36s ║                                                                                                                                                         ║ %-36s ║\n",
-                formatSquare(squares.get(9), 9, players),
-                formatSquare(squares.get(16), 16, players));
-        System.out.println("╠══════════════════════════════════════╣                                                                                                                                                            ╠══════════════════════════════════════╣");
-        System.out.printf(" ║ %-36s ║                                                                                                                                                           ║ %-36s ║\n",
-                formatSquare(squares.get(8), 8, players),
-                formatSquare(squares.get(17), 17, players));
-        System.out.println("╠══════════════════════════════════════╣                                                                                                                                                            ╠══════════════════════════════════════╣");
-        System.out.printf(" ║ %-36s ║                                                                                                                                                          ║ %-36s ║\n",
-                formatSquare(squares.get(7), 7, players),
-                formatSquare(squares.get(18), 18, players));
-        System.out.println("╠══════════════════════════════════════╣                                                                                                                                                            ╠══════════════════════════════════════╣");
-        System.out.printf(" ║ %-36s ║                                                                                                                                                          ║ %-36s ║\n",
-                formatSquare(squares.get(6), 6, players),
-                formatSquare(squares.get(19), 19, players));
-        System.out.println("╠══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╦══════════════════════════════════════╣");
-        System.out.printf(" ║ %-36s ║ %-36s ║ %-36s ║ %-36s ║ %-36s ║ %-36s ║\n",
-                formatSquare(squares.get(5), 5, players),
-                formatSquare(squares.get(4), 4, players),
-                formatSquare(squares.get(3), 3, players),
-                formatSquare(squares.get(2), 2, players),
-                formatSquare(squares.get(1), 1, players),
-                formatSquare(squares.get(0), 0, players));
-        System.out.println("╚══════════════════════════════════════╩══════════════════════════════════════╩══════════════════════════════════════╩══════════════════════════════════════╩══════════════════════════════════════╩══════════════════════════════════════╝");
+        // Define box width for consistency
+        int boxWidth = 30;
 
-        // 顯示玩家位置
+        // Top row
+        System.out.println("╔════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╗");
+        System.out.printf("║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║\n",
+                formatSquareTitle(squares.get(10), 10),
+                formatSquareTitle(squares.get(11), 11),
+                formatSquareTitle(squares.get(12), 12),
+                formatSquareTitle(squares.get(13), 13),
+                formatSquareTitle(squares.get(14), 14),
+                formatSquareTitle(squares.get(15), 15));
+        System.out.printf("║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║\n",
+                formatSquareDetails(squares.get(10), 10, players, boxWidth),
+                formatSquareDetails(squares.get(11), 11, players, boxWidth),
+                formatSquareDetails(squares.get(12), 12, players, boxWidth),
+                formatSquareDetails(squares.get(13), 13, players, boxWidth),
+                formatSquareDetails(squares.get(14), 14, players, boxWidth),
+                formatSquareDetails(squares.get(15), 15, players, boxWidth));
+        System.out.println("╠════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╣");
+
+        // Middle vertical parts
+        for (int i = 9; i >= 6; i--) {
+            System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                    formatSquareTitle(squares.get(i), i),
+                    formatSquareTitle(squares.get(20 - i), 20 - i));
+            System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                    formatSquareDetails(squares.get(i), i, players, boxWidth),
+                    formatSquareDetails(squares.get(20 - i), 20 - i, players, boxWidth));
+            if (i > 6) {
+                System.out.println("╠════════════════════════════════╣                                                                                                                                   ╠════════════════════════════════╣");
+            }
+        }
+
+        // Bottom row
+        System.out.println("╠════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╣");
+        System.out.printf("║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║\n",
+                formatSquareTitle(squares.get(5), 5),
+                formatSquareTitle(squares.get(4), 4),
+                formatSquareTitle(squares.get(3), 3),
+                formatSquareTitle(squares.get(2), 2),
+                formatSquareTitle(squares.get(1), 1),
+                formatSquareTitle(squares.get(0), 0));
+        System.out.printf("║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║ %-30s ║\n",
+                formatSquareDetails(squares.get(5), 5, players, boxWidth),
+                formatSquareDetails(squares.get(4), 4, players, boxWidth),
+                formatSquareDetails(squares.get(3), 3, players, boxWidth),
+                formatSquareDetails(squares.get(2), 2, players, boxWidth),
+                formatSquareDetails(squares.get(1), 1, players, boxWidth),
+                formatSquareDetails(squares.get(0), 0, players, boxWidth));
+        System.out.println("╚════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╝");
+
+        // Display players' positions
         System.out.println("Players' Positions:");
         for (Player player : players) {
             System.out.println(player.getName() + " is on square " + (player.getPosition() + 1));
         }
     }
 
-    // Helper method to format square details dynamically
-    private String formatSquare(Square square, int position, List<Player> players) {
-        StringBuilder squareInfo = new StringBuilder(" " + (position + 1) + ". " + square.getName() + " ");
+    // Helper method to format square title (name and position)
+    private String formatSquareTitle(Square square, int position) {
+        return (position + 1) + ". " + square.getName();
+    }
 
-        // 如果是Property類型，顯示價格和租金
+    // Helper method to format square details (price, rent, and players)
+    private String formatSquareDetails(Square square, int position, List<Player> players, int boxWidth) {
+        StringBuilder details = new StringBuilder();
+
+        // If the square is a Property, show price and rent
         if (square instanceof Property) {
             Property property = (Property) square;
-            squareInfo.append("(P: HKD ").append(property.getPrice())
-                    .append(", R: HKD ").append(property.getRent()).append(") ");
+            details.append("(Price: HKD ").append(property.getPrice())
+                    .append(", Rent: HKD ").append(property.getRent()).append(")");
         }
 
-        // 檢查是否有玩家在該方格，並顯示玩家名稱
+        // Check if there are players on this square, and show their names
+        int playerCount = 0;
         for (Player player : players) {
             if (player.getPosition() == position) {
-                squareInfo.append("[").append(player.getName()).append("] ");
+                if (details.length() > 0) details.append(" ");
+                if (details.length() + player.getName().length() + 2 > boxWidth - 4) {
+                    details.append("[...]");
+                    break;
+                } else {
+                    details.append("[").append(player.getName()).append("]");
+                    playerCount++;
+                }
             }
         }
 
-        return squareInfo.toString();
+        return details.toString();
     }
 
-    // 顯示特定玩家的狀態
+    // Display the status of a specific player
     public void displayPlayerStatus(Player player) {
         System.out.println("-----------------------------------------------------");
         System.out.println("Player: " + player.getName());
@@ -85,7 +115,7 @@ public class GameView {
         System.out.println("-----------------------------------------------------");
     }
 
-    // 向玩家顯示一般消息
+    // Display a general message to the players
     public void showMessage(String message) {
         System.out.println(message);
     }
