@@ -34,18 +34,43 @@ public class GameView {
                 formatSquareDetails(squares.get(15), 15, players, boxWidth));
         System.out.println("╠════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╣");
 
-        // Middle vertical parts
-        for (int i = 9; i >= 6; i--) {
-            System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
-                    formatSquareTitle(squares.get(i), i),
-                    formatSquareTitle(squares.get(20 - i), 20 - i));
-            System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
-                    formatSquareDetails(squares.get(i), i, players, boxWidth),
-                    formatSquareDetails(squares.get(20 - i), 20 - i, players, boxWidth));
-            if (i > 6) {
-                System.out.println("╠════════════════════════════════╣                                                                                                                                   ╠════════════════════════════════╣");
-            }
-        }
+        // Display the middle section (manually without loop)
+
+        // Square 9 and 16
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareTitle(squares.get(9), 9),
+                formatSquareTitle(squares.get(16), 16));
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareDetails(squares.get(9), 9, players, 30),
+                formatSquareDetails(squares.get(16), 16, players, 30));
+        System.out.println("╠════════════════════════════════╣                                                                                                                                   ╠════════════════════════════════╣");
+
+        // Square 8 and 17
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareTitle(squares.get(8), 8),
+                formatSquareTitle(squares.get(17), 17));
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareDetails(squares.get(8), 8, players, 30),
+                formatSquareDetails(squares.get(17), 17, players, 30));
+        System.out.println("╠════════════════════════════════╣                                                                                                                                   ╠════════════════════════════════╣");
+
+// Square 7 and 18
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareTitle(squares.get(7), 7),
+                formatSquareTitle(squares.get(18), 18));
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareDetails(squares.get(7), 7, players, 30),
+                formatSquareDetails(squares.get(18), 18, players, 30));
+        System.out.println("╠════════════════════════════════╣                                                                                                                                   ╠════════════════════════════════╣");
+
+// Square 6 and 19
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareTitle(squares.get(6), 6),
+                formatSquareTitle(squares.get(19), 19));
+        System.out.printf("║ %-30s ║                                                                                                                                   ║ %-30s ║\n",
+                formatSquareDetails(squares.get(6), 6, players, 30),
+                formatSquareDetails(squares.get(19), 19, players, 30));
+
 
         // Bottom row
         System.out.println("╠════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╦════════════════════════════════╣");
