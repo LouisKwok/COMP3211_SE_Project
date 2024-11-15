@@ -44,16 +44,16 @@ public class MainMenu {
 
             switch (choice) {
                 case 1:
-                    // 开始新游戏
+                    // Start a new game
                     System.out.println("Starting a new game...");
 
-                    // 如果游戏板未初始化，初始化游戏板
+                    // If the board is null, initialize it with a new default or custom board
                     if (board == null) {
                         boardController = new BoardController(new Board());
                         board = boardController.initializeBoard();
                     }
-                    // 使用已初始化或已修改的游戏板
-                    boardController = new BoardController(board);
+
+                    // Start the game with the initialized board
                     GameController gameController = new GameController(dice, view, board);
                     gameController.startGame();
                     break;
@@ -61,14 +61,23 @@ public class MainMenu {
                 case 2:
                     // Continue a saved game
                     System.out.println("Loading saved game...");
+
+                    // If the board is null, initialize it with a default board
                     if (board == null) {
-                        boardController = new BoardController(new Board()); // Use default board
+                        boardController = new BoardController(new Board());
                         board = boardController.initializeBoard();
                     }
-                    boardController = new BoardController(board);
+
+                    // Start the game with the loaded game state
                     GameController continueGameController = new GameController(dice, view, board);
                     continueGameController.loadGameFromTextFile();
-                    continueGameController.startGame();
+
+                    // Check if the game was loaded successfully
+                    if (continueGameController.isGameLoaded()) {
+                        continueGameController.startGame();
+                    } else {
+                        System.out.println("Failed to load the game. Returning to the main menu.");
+                    }
                     break;
 
                 case 3:
@@ -110,6 +119,4 @@ public class MainMenu {
         System.out.println("Have fun and good luck!");
         System.out.println("=====================================================");
     }
-
-
 }
