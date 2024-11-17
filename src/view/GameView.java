@@ -10,7 +10,7 @@ import java.util.List;
 public class GameView {
 
     // Display a large, ASCII-style representation of the Monopoly board with numbered positions
-    public void displayBoardLarge(Board board, List<Player> players) {
+    public void displayBoardLarge(Board board, List<Player> players, int currentRound) {
         List<Square> squares = board.getSquares();
 
         // Define box width for consistency
@@ -40,6 +40,13 @@ public class GameView {
                 formatPlayerDetails(squares.get(14), 14, players, boxWidth),
                 formatPlayerDetails(squares.get(15), 15, players, boxWidth));
         System.out.println("╠════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╩════════════════════════════════╣");
+
+        // Display round information prominently and centered
+        String roundInfo = "ROUND: " + currentRound + " / 100";
+        int totalWidth = 6 * (boxWidth + 3) + 5;  // Adding width for grid lines and corners
+        int roundPadding = (totalWidth - roundInfo.length()) / 2;
+        String roundDisplay =" ".repeat(roundPadding) + roundInfo + " ".repeat(totalWidth - roundPadding - roundInfo.length());
+        System.out.println(roundDisplay);
 
         // Display the middle section (manually without loop)
 
@@ -121,6 +128,7 @@ public class GameView {
             System.out.println(player.getName() + " is on square " + (player.getPosition() + 1));
         }
     }
+
 
     // Helper method to format square title (name and position)
     private String formatSquareTitle(Square square, int position) {
