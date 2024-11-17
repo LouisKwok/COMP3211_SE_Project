@@ -109,7 +109,7 @@ public class GameController {
             view.displayBoardLarge(board, players, currentRound);
 
             Player currentPlayer = players.get(currentPlayerIndex);
-            displayPlayerStatus(currentPlayer);
+
 
             boolean turnEnded = false;
 
@@ -163,13 +163,13 @@ public class GameController {
                                     System.out.println("Invalid player number.");
                                     continue;
                                 }
-                                view.displayPlayerStatus(players.get(playerNum - 1));
+                                displayPlayerStatus(players.get(playerNum - 1));
                             } catch (NumberFormatException e) {
                                 System.out.println("Invalid input. Please enter a valid player number.");
                             }
                         } else if (subChoice == 2) {
                             for (Player player : players) {
-                                view.displayPlayerStatus(player);
+                                displayPlayerStatus(player);
                             }
                         } else {
                             System.out.println("Invalid choice. Please enter either 1 or 2.");
