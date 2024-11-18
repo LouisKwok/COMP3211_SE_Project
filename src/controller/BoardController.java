@@ -91,6 +91,7 @@ public class BoardController {
                 }
 
                 squares.add(square);
+
             }
 
             // Update the board's squares list

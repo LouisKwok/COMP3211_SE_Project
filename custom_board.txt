@@ -1,8 +1,8 @@
 Type	Name	Price	Rent
 Go	Go		
-Property	Wan Chai	700	70
 Property	Central	800	80
-Chance	Chance		
+Property	Wan Chai	700	70
+IncomeTax	Income Tax		
 Property	Stanley	600	60
 InJail	In Jail/Just Visiting		
 Property	Shek O	400	40
@@ -18,4 +18,4 @@ GoToJail	Go to Jail
 Property	Sai Kung	400	40
 Property	Yuen Long	400	40
 Chance	Chance		
-Property	Tai O	600	60
+Property	1	1	1
