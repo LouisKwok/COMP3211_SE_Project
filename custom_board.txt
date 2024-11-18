@@ -1,8 +1,8 @@
 Type	Name	Price	Rent
 Go	Go		
-Property	wewe	22	22
 Property	Wan Chai	700	70
-IncomeTax	Income Tax		
+Property	Central	800	80
+Chance	Chance		
 Property	Stanley	600	60
 InJail	In Jail/Just Visiting		
 Property	Shek O	400	40

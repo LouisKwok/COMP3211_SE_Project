@@ -91,7 +91,7 @@ public class MainMenu {
                         board = new Board(); // Initialize a default board if it hasn't been initialized yet
                     }
                     boardController = new BoardController(board);
-                    boardController.modifyPropertySquares(); // Modify properties of the current board
+                    boardController.modifyPropertySquares(); // Modified to use the integrated modify method
                     break;
 
                 case 5:
