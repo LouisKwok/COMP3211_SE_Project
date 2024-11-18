@@ -71,8 +71,12 @@ public class Player {
     // Method to move the player forward by a certain number of spaces
     public void move(int spaces) {
         if (!inJail) {
+            // Update the player's position internally, using 0-based indexing
             this.position = (this.position + spaces) % 20; // Assuming there are 20 squares on the board
-            System.out.println(name + " moves to position " + position + ".");
+
+            // Display the new position, but add 1 to make it player-friendly (i.e., 1-based indexing)
+            int displayedPosition = this.position + 1;
+            System.out.println(name + " moves to position " + displayedPosition + ".");
         } else {
             System.out.println(name + " is in jail and cannot move.");
         }
