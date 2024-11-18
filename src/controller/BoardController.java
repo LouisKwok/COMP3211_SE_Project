@@ -155,7 +155,7 @@ public class BoardController {
                         square = new ChanceSquare();
                         break;
                     case "GoToJail":
-                        square = new GoToJailSquare();
+                        square = new GoToJailSquare(board);
                         break;
                     default:
                         square = new BasicSquare(name);

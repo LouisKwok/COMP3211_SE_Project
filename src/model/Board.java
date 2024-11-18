@@ -31,7 +31,7 @@ public class Board {
         squares.add(new ChanceSquare());             // 13. Chance
         squares.add(new Property("Tuen Mun", 400, 40)); // 14. Tuen Mun
         squares.add(new Property("Tai Po", 500, 50));   // 15. Tai Po
-        squares.add(new GoToJailSquare());           // 16. Go To Jail
+        squares.add(new GoToJailSquare(this));           // 16. Go To Jail
         squares.add(new Property("Sai Kung", 400, 40));  // 17. Sai Kung
         squares.add(new Property("Yuen Long", 400, 40)); // 18. Yuen Long
         squares.add(new ChanceSquare());             // 19. Chance
