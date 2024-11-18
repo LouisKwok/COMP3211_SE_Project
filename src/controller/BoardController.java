@@ -91,7 +91,6 @@ public class BoardController {
                 }
 
                 squares.add(square);
-
             }
 
             // Update the board's squares list
@@ -109,12 +108,43 @@ public class BoardController {
         return newBoard;
     }
 
+    // Method to display the current gameboard
+    public void displayGameBoard() {
+        System.out.println("=====================================================");
+        System.out.println("              CURRENT GAMEBOARD DESIGN               ");
+        System.out.println("=====================================================");
+        List<Square> squares = board.getSquares();
+        for (int i = 0; i < squares.size(); i++) {
+            Square square = squares.get(i);
+            if (square instanceof Property) {
+                Property property = (Property) square;
+                System.out.println((i + 1) + ". Property: " + property.getName() + " (Price: HKD " + property.getPrice() + ", Rent: HKD " + property.getRent() + ")");
+            } else if (square instanceof GoSquare) {
+                System.out.println((i + 1) + ". Go: " + square.getName());
+            } else if (square instanceof IncomeTaxSquare) {
+                System.out.println((i + 1) + ". IncomeTax: " + square.getName());
+            } else if (square instanceof InJailOrVisitingSquare) {
+                System.out.println((i + 1) + ". In Jail/Just Visiting: " + square.getName());
+            } else if (square instanceof FreeParkingSquare) {
+                System.out.println((i + 1) + ". Free Parking: " + square.getName());
+            } else if (square instanceof ChanceSquare) {
+                System.out.println((i + 1) + ". Chance: " + square.getName());
+            } else if (square instanceof GoToJailSquare) {
+                System.out.println((i + 1) + ". Go To Jail: " + square.getName());
+            } else {
+                System.out.println((i + 1) + ". Basic Square: " + square.getName());
+            }
+        }
+        System.out.println("=====================================================");
+    }
+
     // Method to modify property details, swap positions, or change square types
     public void modifyPropertySquares() {
         Scanner scanner = new Scanner(System.in);
-        List<Square> squares = board.getSquares();
 
         while (true) {
+            displayGameBoard(); // Display the current gameboard before modifying
+
             System.out.println("Gameboard Designer: Modify Squares");
             System.out.println("1. Modify Property Details");
             System.out.println("2. Swap Two Squares");
@@ -132,15 +162,15 @@ public class BoardController {
 
             switch (choice) {
                 case 1: // Modify Property Details
-                    modifyPropertyDetails(scanner, squares);
+                    modifyPropertyDetails(scanner, board.getSquares());
                     break;
 
                 case 2: // Swap Two Squares
-                    swapSquares(scanner, squares);
+                    swapSquares(scanner, board.getSquares());
                     break;
 
                 case 3: // Change Square Type
-                    changeSquareType(scanner, squares);
+                    changeSquareType(scanner, board.getSquares());
                     break;
 
                 case 0: // Exit
@@ -153,18 +183,12 @@ public class BoardController {
         }
     }
 
-    // Method to modify property details - Set to public
+    // Method to modify property details
     public void modifyPropertyDetails(Scanner scanner, List<Square> squares) {
         while (true) {
-            System.out.println("Select a property to modify by entering the corresponding number, or enter 0 to exit:");
+            displayGameBoard(); // Display the current gameboard to help the designer select the property
 
-            for (int i = 0; i < squares.size(); i++) {
-                Square square = squares.get(i);
-                if (square instanceof Property) {
-                    Property property = (Property) square;
-                    System.out.println((i + 1) + ". " + property.getName() + " (Price: HKD " + property.getPrice() + ", Rent: HKD " + property.getRent() + ")");
-                }
-            }
+            System.out.println("Select a property to modify by entering the corresponding number, or enter 0 to exit:");
 
             int choice;
             try {
@@ -214,8 +238,10 @@ public class BoardController {
         }
     }
 
-    // Method to swap two squares - Set to public
+    // Method to swap two squares
     public void swapSquares(Scanner scanner, List<Square> squares) {
+        displayGameBoard(); // Display the current gameboard to help the designer select the squares to swap
+
         System.out.print("Enter the position of the first square to swap (1-" + squares.size() + "): ");
         int pos1 = getValidPosition(scanner, squares.size());
         if (pos1 == -1) return;
@@ -232,8 +258,10 @@ public class BoardController {
         System.out.println("Squares swapped successfully!");
     }
 
-    // Method to change square type - Set to public
+    // Method to change square type
     public void changeSquareType(Scanner scanner, List<Square> squares) {
+        displayGameBoard(); // Display the current gameboard to help the designer select the square to change
+
         System.out.print("Enter the position of the square to modify (1-" + squares.size() + "): ");
         int pos = getValidPosition(scanner, squares.size());
         if (pos == -1) return;
