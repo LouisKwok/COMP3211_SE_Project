@@ -1,6 +1,6 @@
 Type	Name	Price	Rent
 Go	Go		
-Property	New Property	1000	100
+Go	Go		
 Property	Wan Chai	700	70
 IncomeTax	Income Tax		
 Property	Stanley	600	60
