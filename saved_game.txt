@@ -1,12 +1,2 @@
 0
-2
-Charlie
-1350
-3
-false
-0
-Morgan
-1350
-3
-false
 0
