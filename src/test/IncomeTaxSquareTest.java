@@ -10,12 +10,16 @@ class IncomeTaxSquareTest {
 
     @Test
     void testIncomeTaxDeduction() {
-        // Test for income tax deduction
+        // Arrange
         Player player = new Player("Charlie");
-        player.updateMoney(5000); // Add extra money for testing
+        player.updateMoney(5000); // Set player's money to 6500 total
         IncomeTaxSquare taxSquare = new IncomeTaxSquare();
 
+        // Act
         taxSquare.action(player);
-        assertEquals(4500, player.getMoney(), "Income tax should deduct 10% of player's money.");
+
+        // Assert
+        assertEquals(5850, player.getMoney(), "Income tax should deduct 10% of player's money.");
     }
+
 }

@@ -8,8 +8,10 @@ public class IncomeTaxSquare extends Square {
 
     @Override
     public void action(Player player) {
-        int taxAmount = player.getMoney() / 10;
-        player.updateMoney(-taxAmount);
-        System.out.println(player.getName() + " pays HKD " + taxAmount + " as income tax.");
+        // Deduct 10% of the player's money
+        int tax = (int) (player.getMoney() * 0.1);
+        player.updateMoney(-tax); // Deduct the tax
+        System.out.println(player.getName() + " pays HKD " + tax + " as income tax.");
     }
+
 }
