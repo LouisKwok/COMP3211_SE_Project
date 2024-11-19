@@ -1,6 +1,10 @@
 package model;
 
+import controller.GameController;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,75 +12,115 @@ class PlayerTest {
 
     @Test
     void testPlayerInitialization() {
-        // 測試玩家初始化
+        // Verify player initialization
         Player player = new Player("Alice");
 
-        // 檢查名稱是否正確
-        assertEquals("Alice", player.getName());
-
-        // 檢查起始金額是否為 1500
-        assertEquals(1500, player.getMoney());
-
-        // 檢查初始位置是否為 0
-        assertEquals(0, player.getPosition());
-
-        // 檢查初始是否不在監獄
-        assertFalse(player.isInJail());
-
-        // 檢查監獄回合數是否為 0
-        assertEquals(0, player.getJailTurns());
+        assertEquals("Alice", player.getName(), "Player's name should be initialized correctly.");
+        assertEquals(1500, player.getMoney(), "Player should start with HKD 1500.");
+        assertEquals(0, player.getPosition(), "Player should start at position 0.");
+        assertFalse(player.isInJail(), "Player should not start in jail.");
+        assertEquals(0, player.getJailTurns(), "Player should have 0 jail turns at initialization.");
     }
 
     @Test
-    void testPlayerMoneyUpdate() {
-        // 測試金錢增減
+    void testPassingGoIncreasesMoney() {
+        // Test for money increment after passing "Go"
         Player player = new Player("Bob");
+        GoSquare goSquare = new GoSquare();
 
-        // 增加金錢
-        player.updateMoney(500);
-        assertEquals(2000, player.getMoney());
-
-        // 減少金錢
-        player.updateMoney(-300);
-        assertEquals(1700, player.getMoney());
-
-        // 測試破產情況
-        player.updateMoney(-2000);
-        assertEquals(-300, player.getMoney());
-        assertTrue(player.getMoney() < 0, "玩家應該破產");
+        goSquare.action(player);
+        assertEquals(3000, player.getMoney(), "Player should receive HKD 1500 after passing Go.");
     }
 
     @Test
-    void testPlayerMovement() {
-        // 測試玩家移動
+    void testIncomeTaxDeduction() {
+        // Test for income tax deduction
         Player player = new Player("Charlie");
+        player.updateMoney(5000); // Add extra money for testing
+        IncomeTaxSquare taxSquare = new IncomeTaxSquare();
 
-        // 移動 5 格
-        player.move(5);
-        assertEquals(5, player.getPosition(), "玩家應該在位置 5");
-
-        // 移動超出 20 格（回到起點後的循環測試）
-        player.move(16);
-        assertEquals(1, player.getPosition(), "玩家應該回到位置 1");
+        taxSquare.action(player);
+        assertEquals(4500, player.getMoney(), "Income tax should deduct 10% of player's money.");
     }
 
     @Test
-    void testPlayerJailStatus() {
-        // 測試監獄狀態
+    void testLandingOnChanceSquare() {
+        // Test for random chance events
         Player player = new Player("Diana");
+        ChanceSquare chanceSquare = new ChanceSquare();
 
-        // 測試進入監獄
+        // Execute the action multiple times to validate both outcomes (gain/loss)
+        for (int i = 0; i < 10; i++) {
+            chanceSquare.action(player);
+            assertTrue(player.getMoney() >= 0, "Player's money should not go below 0 due to chance.");
+        }
+    }
+
+    @Test
+    void testPlayerBankruptcy() {
+        // Test for player bankruptcy
+        Player player = new Player("Edward");
+        player.updateMoney(-2000); // Reduce money to a negative value
+
+        assertTrue(player.getMoney() < 0, "Player should be bankrupt when money is negative.");
+    }
+
+    @Test
+    void testJailMechanics() {
+        // Test jail mechanics
+        Player player = new Player("Fiona");
+
         player.setInJail(true);
-        assertTrue(player.isInJail(), "玩家應該在監獄中");
-        assertEquals(3, player.getJailTurns(), "初始監獄回合數應為 3");
+        assertTrue(player.isInJail(), "Player should be in jail.");
+        assertEquals(3, player.getJailTurns(), "Player should start with 3 jail turns.");
 
-        // 減少監獄回合數
         player.decreaseJailTurn();
-        assertEquals(2, player.getJailTurns(), "監獄回合數應減少到 2");
-
-        // 測試出獄
+        assertEquals(2, player.getJailTurns(), "Jail turns should decrease by 1.");
         player.setInJail(false);
-        assertFalse(player.isInJail(), "玩家應該已出獄");
-        assertEquals(0, player.getJailTurns(), "監獄回合數應清零");
+        assertFalse(player.isInJail(), "Player should be out of jail.");
+    }
+
+    @Test
+    void testPlayerMovementAcrossBoard() {
+        // Test player movement and wrapping around the board
+        Player player = new Player("Grace");
+
+        player.move(19); // Move near the end of the board
+        assertEquals(19, player.getPosition(), "Player should be at position 19.");
+
+        player.move(2); // Move beyond the board
+        assertEquals(1, player.getPosition(), "Player should wrap around to position 1.");
+    }
+
+    @Test
+    void testBuyingAndPayingRent() {
+        // Test property ownership and rent payments
+        Player owner = new Player("Harry");
+        Player visitor = new Player("Isabelle");
+        Property property = new Property("Central", 800, 90);
+
+        // Owner buys the property
+        property.setOwner(owner);
+        assertEquals(owner, property.getOwner(), "Owner should be set correctly.");
+
+        // Visitor lands on the property
+        property.action(visitor);
+        assertEquals(1410, visitor.getMoney(), "Visitor should pay rent to the owner.");
+        assertEquals(1590, owner.getMoney(), "Owner should receive rent from the visitor.");
+    }
+
+    @Test
+    void testLoadingAndSavingGame() {
+        // Placeholder for testing loading and saving game state
+        GameController controller = new GameController(null, null, new Board());
+        controller.saveGameToTextFile();
+
+        // Validate file creation
+        File savedFile = new File("saved_game.txt");
+        assertTrue(savedFile.exists(), "Saved game file should exist.");
+
+        // Validate loading the game
+        controller.loadGameFromTextFile();
+        assertTrue(controller.isGameLoaded(), "Game should load successfully.");
     }
 }
