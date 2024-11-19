@@ -18,4 +18,4 @@ GoToJail	Go to Jail
 Property	Sai Kung	400	40
 Property	Yuen Long	400	40
 Chance	Chance		
-Property	Tai O	600	60
+Property	Central	800	80

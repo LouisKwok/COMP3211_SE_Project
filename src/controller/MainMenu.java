@@ -47,11 +47,12 @@ public class MainMenu {
                     // Start a new game
                     System.out.println("Starting a new game...");
 
-                    // If the board is null, initialize it with a new default or custom board
-                    if (board == null) {
-                        boardController = new BoardController(new Board());
-                        board = boardController.initializeBoard();
-                    }
+                    // Reset the board to ensure a new prompt for loading or using the default map
+                    board = null;
+
+                    // Initialize the board using BoardController
+                    boardController = new BoardController(new Board());
+                    board = boardController.initializeBoard();
 
                     // Start the game with the initialized board
                     GameController gameController = new GameController(dice, view, board);
@@ -91,7 +92,7 @@ public class MainMenu {
                         board = new Board(); // Initialize a default board if it hasn't been initialized yet
                     }
                     boardController = new BoardController(board);
-                    boardController.modifyPropertySquares(); // Modify properties of the current board
+                    boardController.modifyPropertySquares(); // Modified to use the integrated modify method
                     break;
 
                 case 5:

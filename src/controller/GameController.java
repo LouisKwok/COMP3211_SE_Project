@@ -21,6 +21,7 @@ public class GameController {
     private GameView view;
     private int currentPlayerIndex;
     private boolean gameLoaded;
+    private int currentRound;
 
     // Constructor accepting Dice, GameView, and Board, without automatically initializing players
     public GameController(Dice dice, GameView view, Board board) {
@@ -30,6 +31,7 @@ public class GameController {
         this.players = new ArrayList<>();  // Initialize as an empty list, players are set during startGame or loadGame
         this.currentPlayerIndex = 0;
         this.gameLoaded = false;
+        this.currentRound = 0;
     }
 
     // Method to initialize players with user input or randomly generated names for each player individually
@@ -103,11 +105,11 @@ public class GameController {
         Scanner scanner = new Scanner(System.in);
 
         while (!gameEnded) {
-            // Display the current state of the board using the new large view
-            view.displayBoardLarge(board, players);
+            // Display the current state of the board with round information
+            view.displayBoardLarge(board, players, currentRound);
 
             Player currentPlayer = players.get(currentPlayerIndex);
-            view.displayPlayerStatus(currentPlayer);
+
 
             boolean turnEnded = false;
 
@@ -140,9 +142,37 @@ public class GameController {
                         break;
 
                     case 2: // See player status
-                        view.showMessage("Player Status:");
-                        for (Player player : players) {
-                            view.displayPlayerStatus(player);
+                        System.out.println("Do you want to see the status of a specific player or all players?");
+                        System.out.println("1. Specific player");
+                        System.out.println("2. All players");
+
+                        int subChoice;
+                        try {
+                            subChoice = Integer.parseInt(scanner.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter either 1 or 2.");
+                            continue;
+                        }
+
+                        if (subChoice == 1) {
+                            System.out.println("Enter player number (1-" + players.size() + "): ");
+                            int playerNum;
+                            try {
+                                playerNum = Integer.parseInt(scanner.nextLine());
+                                if (playerNum < 1 || playerNum > players.size()) {
+                                    System.out.println("Invalid player number.");
+                                    continue;
+                                }
+                                displayPlayerStatus(players.get(playerNum - 1));
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input. Please enter a valid player number.");
+                            }
+                        } else if (subChoice == 2) {
+                            for (Player player : players) {
+                                displayPlayerStatus(player);
+                            }
+                        } else {
+                            System.out.println("Invalid choice. Please enter either 1 or 2.");
                         }
                         break;
 
@@ -177,16 +207,45 @@ public class GameController {
                 currentPlayerIndex--; // Decrement to adjust the index since we removed a player
             }
 
-            // End game if only one player left
-            gameEnded = players.size() == 1;
+            // End game if only one player left or if 100 rounds have passed
+            if (players.size() == 1 || currentRound >= 100) {
+                gameEnded = true;
+            }
+
+            // Increment round only if the current player is the last in the list
+            if (currentPlayerIndex == players.size() - 1) {
+                currentRound++;
+            }
 
             // Move to the next player
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         }
 
-        // Declare the winner
+        // Determine the winner(s) at the end of the game
+        determineWinners();
+    }
+
+    private void determineWinners() {
         if (players.size() == 1) {
             view.showMessage("Game Over! Winner: " + players.get(0).getName());
+        } else {
+            // Find the player(s) with the most money
+            int maxMoney = players.stream().mapToInt(Player::getMoney).max().orElse(0);
+            List<Player> winners = new ArrayList<>();
+            for (Player player : players) {
+                if (player.getMoney() == maxMoney) {
+                    winners.add(player);
+                }
+            }
+
+            if (winners.size() == 1) {
+                view.showMessage("Game Over! Winner: " + winners.get(0).getName());
+            } else {
+                view.showMessage("Game Over! It's a tie between the following players:");
+                for (Player winner : winners) {
+                    view.showMessage(winner.getName() + " with " + winner.getMoney() + " HKD");
+                }
+            }
         }
     }
 
@@ -290,6 +349,49 @@ public class GameController {
             gameLoaded = false;
         }
     }
+
+    // Display the status of a specific player, including properties owned and jail status
+    public void displayPlayerStatus(Player player) {
+        System.out.println("-----------------------------------------------------");
+        System.out.println("Player: " + player.getName());
+        System.out.println("Position: " + (player.getPosition() + 1));
+        System.out.println("Money: " + player.getMoney() + " HKD");
+
+        // Show if the player is in jail or not
+        if (player.isInJail()) {
+            System.out.println("Status: In Jail");
+        } else {
+            System.out.println("Status: Free");
+        }
+
+        // Display properties owned by the player
+        List<Property> ownedProperties = getPlayerProperties(player);
+        if (ownedProperties.isEmpty()) {
+            System.out.println("Owned Properties: None");
+        } else {
+            System.out.print("Owned Properties: ");
+            for (Property property : ownedProperties) {
+                System.out.print(property.getName() + " (Price: " + property.getPrice() + ", Rent: " + property.getRent() + "); ");
+            }
+            System.out.println();
+        }
+        System.out.println("-----------------------------------------------------");
+    }
+
+    // Get the list of properties owned by a player
+    private List<Property> getPlayerProperties(Player player) {
+        List<Property> ownedProperties = new ArrayList<>();
+        for (Square square : board.getSquares()) {
+            if (square instanceof Property) {
+                Property property = (Property) square;
+                if (player.equals(property.getOwner())) {
+                    ownedProperties.add(property);
+                }
+            }
+        }
+        return ownedProperties;
+    }
+
 
     // Method to check if the game was successfully loaded
     public boolean isGameLoaded() {
